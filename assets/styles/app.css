@@ -17,14 +17,6 @@ body {
     background-color: transparent;
     color: var(--text-color);
 }
-.team {
-    margin: 30px;
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 20px;
-    animation: slideLeftTodown 60s ease-in infinite;
-}
-
 @keyframes slideLeftTodown {
     from {
         transform: translatey(0%);
@@ -37,7 +29,17 @@ body {
     }
 }
 
+.team {
+    margin: 30px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 20px;
+    animation: slideLeftTodown 60s linear infinite;
+    overflow: hidden;
+}
+
 .member {
+    overflow: hidden;
     width: 100px;
     /* Compact width */
     padding: 12px;
