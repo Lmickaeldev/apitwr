@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+       <h1>overlay</h1>
+       <div class="box"></div>
+       <div class="neonbox"></div>
+
+
+    <div id="teams-container">
+    {% if teams is not empty %}
+        <div class="team">
+            {% if teams.members is not empty %}
+                {% for member in teams.members %}
+                    <div class="member">
+                        <p>{{ member.name }}</p>
+
+                        <h3>Stats:</h3>
+                        <ul>
+                            <li><strong>Kills:</strong> {{ member.kills }}</li>
+                            <li><strong>Deaths:</strong> {{ member.deaths }}</li>
+                            <li><strong>K/D Ratio:</strong> {{ member.kdr }}</li>
+                            <li><strong>Headshots:</strong> {{ member.headshots }}</li>
+                            <li><strong>Accuracy:</strong> {{ member.accuracy }}%</li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No members found.</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No teams found.</p>
+    {% endif %}
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const neonBox = document.querySelector(".neonbox");
+    const members = document.querySelectorAll(".member");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                entry.target.classList.remove("hidden");
+            } else {
+                entry.target.classList.add("hidden");
+                entry.target.classList.remove("visible");
+            }
+        });
+    }, {
+        root: null, // Utilise la fenêtre comme cadre de vue
+        rootMargin: "0px",
+        threshold: 1 // Déclenche quand 50% de l'élément est visible
+    });
+
+    members.forEach((member) => {
+        observer.observe(member);
+    });
+});
+</script>
+<script>
+<script>
+    const teamsContainer = document.getElementById('teams-container');
+
+    async function fetchTeams() {
+        try {
+            const response = await fetch('/api/teams'); // Remplacez par l'URL de votre API
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des données.');
+            }
+
+            const teams = await response.json();
+
+            // Générer le HTML des équipes dynamiquement
+            if (teams.members && teams.members.length > 0) {
+                teamsContainer.innerHTML = `
+                    <div class="team">
+                        ${teams.members.map(member => `
+                            <div class="member">
+                                <p>${member.name}</p>
+                                <h3>Stats:</h3>
+                                <ul>
+                                    <li><strong>Kills:</strong> ${member.kills}</li>
+                                    <li><strong>Deaths:</strong> ${member.deaths}</li>
+                                    <li><strong>K/D Ratio:</strong> ${member.kdr}</li>
+                                    <li><strong>Headshots:</strong> ${member.headshots}</li>
+                                    <li><strong>Accuracy:</strong> ${member.accuracy}%</li>
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                teamsContainer.innerHTML = `<p>No members found.</p>`;
+            }
+        } catch (error) {
+            teamsContainer.innerHTML = `<p style="color: red;">${error.message}</p>`;
+        }
+    }
+
+    // Charger les données immédiatement et toutes les 30 secondes
+    fetchTeams();
+    setInterval(fetchTeams, 30000);
+</script>
+
+</script>
+
+{% endblock %}
+
+
